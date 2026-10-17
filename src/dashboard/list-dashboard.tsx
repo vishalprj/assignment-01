@@ -16,7 +16,7 @@ export default function ListDashboard() {
   const [isLoading, setIsLoading] = useState(false)
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
 
-  const fetchBills = async () => {
+  async function fetchBills() {
     setIsLoading(true)
     try {
       const remoteBills = await shippingBillService.list()
@@ -35,7 +35,7 @@ export default function ListDashboard() {
     fetchBills()
   }, [])
 
-  const handleDownloadFlatFile = async (bill: SavedBill) => {
+  async function handleDownloadFlatFile(bill: SavedBill) {
     try {
       setDownloadingId(bill.id)
       const res = await shippingBillService.downloadFlatFile(bill.id, bill)
@@ -73,13 +73,9 @@ export default function ListDashboard() {
       return (isNaN(timeB) ? 0 : timeB) - (isNaN(timeA) ? 0 : timeA)
     })
 
-  const uniqueExportersCount = new Set(
-    bills.map((b) => b.values.exporterName).filter(Boolean)
-  ).size
+  const uniqueExportersCount = new Set(bills.map((b) => b.values.exporterName).filter(Boolean)).size
 
-  const uniqueConsigneesCount = new Set(
-    bills.map((b) => b.values.consigneeName).filter(Boolean)
-  ).size
+  const uniqueConsigneesCount = new Set(bills.map((b) => b.values.consigneeName).filter(Boolean)).size
 
   return (
     <div className="space-y-6">
@@ -172,7 +168,11 @@ export default function ListDashboard() {
                       <td>
                         <Badge variant="secondary">Draft</Badge>
                       </td>
-                      <td>{bill.updated && !isNaN(new Date(bill.updated).getTime()) ? new Date(bill.updated).toLocaleDateString() : '—'}</td>
+                      <td>
+                        {bill.updated && !isNaN(new Date(bill.updated).getTime())
+                          ? new Date(bill.updated).toLocaleDateString()
+                          : '—'}
+                      </td>
                       <td className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Button
